@@ -9,7 +9,6 @@ const password = Joi.string().alphanum().min(8).max(12);
 
 const createUserSchema = Joi.object({
     name: name.required(),
-    lastName: lastName.required(),
     email: email.required(),
     password: password.required(),
 });
