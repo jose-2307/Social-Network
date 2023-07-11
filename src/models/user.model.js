@@ -13,6 +13,12 @@ const userSchema = new Schema(
       trim: true,
       unique: true,
     },
+    isCommunity: {
+      type: Boolean,
+      default: false,
+    },
+    refreshToken: String,
+    recoveryToken: String,
   },
   {
     timestamps: true,
