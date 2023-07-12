@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const id = Joi.number().integer();
+const id = Joi.string().alphanum();
 const name = Joi.string().min(3).max(15);
 const email = Joi.string().email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "cl"] } });
 const isCommunity = Joi.boolean();

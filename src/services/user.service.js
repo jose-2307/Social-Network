@@ -34,9 +34,24 @@ class UserService {
           throw boom.notFound("user not found");
         }
     
-        const auth = await Auth.findOne({userId: user.id});
+        const auth = await Auth.findOne({ userId: user.id });
         return {...user, password: auth.password};
     }
+
+    async update(id, changes) {    
+        if (changes.password) { //La contraseña se actualiza individualmente
+            const hash = await bcrypt.hash(changes.password, 10);
+          await Auth.updateOne({ userId: user.id }, { password: hash });
+          if ("recoveryToken" in changes) {
+            await User.updateOne({ _id: id },{ recoveryToken: changes.recoveryToken });
+            return { message: "password and recoveryToken changed" };
+          }
+          return { message: "password changed" };
+        }
+    
+        const resp = await User.updateOne({ _id: id }, changes);
+        return resp;
+      }
 
 }
 
