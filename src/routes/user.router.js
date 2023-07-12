@@ -31,7 +31,7 @@ router.get("/:id",
 );
 
 router.post("/",
-  validatorHanlder(createUserSchema, "body"),
+  validatorHandler(createUserSchema, "body"),
   async (req, res, next) => {
     try {
       const body = req.body;
