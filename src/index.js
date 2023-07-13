@@ -2,8 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const routerApi = require("./routes/index.routes");
 require("./database");
+require("./utils/auth");
 const morgan = require("morgan");
-const { boomErrorHandler, errorHandler, logErrors } = require("./middlewares/error.handler");
+const {
+  boomErrorHandler,
+  errorHandler,
+  logErrors,
+} = require("./middlewares/error.handler");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,10 +23,9 @@ const options = {
     } else {
       callback(new Error("No permitido"));
     }
-  }
-}
+  },
+};
 app.use(cors(options)); //controlamos el acceso
-
 
 routerApi(app);
 
@@ -32,6 +36,6 @@ app.use(errorHandler);
 
 app.use(morgan("dev")); //Permite tener información sobre la petición realizada
 
-app.listen(port,() => {
+app.listen(port, () => {
   console.log(`Escuchando en el puerto ${port}`);
-})
+});
