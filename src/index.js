@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const routerApi = require("./routes/index.routes");
 require("./database");
-require("./utils/auth");
+require("./auth");
 const morgan = require("morgan");
 const {
   boomErrorHandler,
