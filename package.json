@@ -22,7 +22,9 @@
     "nodemailer": "^6.9.3",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "redis": "^3.1.2",
+    "redis-commander": "^0.8.0"
   },
   "devDependencies": {
     "eslint": "^8.44.0",
