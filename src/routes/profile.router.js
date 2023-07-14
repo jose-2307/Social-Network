@@ -13,7 +13,7 @@ router.get("/personal-information",
         try {
             const user = req.user;
             const resp = await userService.findOne(user.sub);
-            delete resp.dataValues.recoveryToken;
+            delete resp._doc.recoveryToken;
             res.json(resp);
         } catch (error) {
             next(error);
