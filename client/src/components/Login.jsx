@@ -1,16 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Avatar, Box, Button, CssBaseline, Grid, Typography, Container, TextField } from "@mui/material";
+import { Avatar, Box, Button, CssBaseline, Grid, Typography, Container } from "@mui/material";
 import { useState } from "react";
 import { Formik, Form } from "formik";
 import Loader from "./Loader";
 import Cookies from "universal-cookie";
 import { loginBack } from "../services/auth.service";
+import TextInput from "./TextInput";
 
 
-
-const defaultTheme = createTheme();
+// const defaultTheme = createTheme();
 const validate = (values) => {
     const errors = {};
 
@@ -54,7 +53,7 @@ const Login = () => {
     }
     
     return (
-        <ThemeProvider theme={defaultTheme}>
+        // <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
             <CssBaseline />
             <Box
@@ -77,26 +76,8 @@ const Login = () => {
                     onSubmit={handleSubmit}
                 >
                     <Form>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
+                        <TextInput name="email" required label="Correo electrónico" adornment=" " type="email" id="outlined-required" dimesions={{ m: 1, width: "66vh" }}></TextInput>
+                        <TextInput name="password" required label="Contraseña" adornment=" " type="password" id="password" dimesions={{ m: 1, width: "66vh" }} autoComplete="current-password"></TextInput>
                         
                         <Button
                             type="submit"
@@ -111,13 +92,13 @@ const Login = () => {
                 
                 <Grid container>
                     <Grid item xs>
-                    <Link href="#" variant="body2">
-                        Forgot password?
+                    <Link to="/recovery-password" variant="body2">
+                        Recuperar contraseña
                     </Link>
                     </Grid>
                     <Grid item>
-                    <Link href="#" variant="body2">
-                        {"Don't have an account? Sign Up"}
+                    <Link to="/sign-up" variant="body2">
+                        Crear cuenta
                     </Link>
                     </Grid>
                 </Grid>
@@ -125,7 +106,7 @@ const Login = () => {
 
                 </Box>
             </Container>
-        </ThemeProvider>
+        // </ThemeProvider>
     );
     
 }
