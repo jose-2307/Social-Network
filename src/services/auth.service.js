@@ -11,8 +11,7 @@ const mailService = new MailService();
 class AuthService {
 
   async login(email, password) {
-    const user = await userService.findByEmail(email);
-
+    const user = await userService.findByEmail(email);    
     if (!user) {
       throw boom.unauthorized();
     }
@@ -21,24 +20,23 @@ class AuthService {
       throw boom.unauthorized();
     }
     delete user.password;
-    delete user.dataValues.recoveryToken;
+    delete user._doc.recoveryToken;
     return user;
   }
 
   async signToken(user) {
     const payload = {
-      sub: user.dataValues.id,
-      role: user.role.name,
+      sub: user._doc._id,
+      role: user._doc.isCommunity,
     };
     const accessToken = jwt.sign(payload, config.jwtSecretLogin, {
-      expiresIn: "5min",
+      expiresIn: "25min",
     });
     const refreshToken = jwt.sign(payload, config.jwtSecretRefresh, {
       expiresIn: "90min",
     });
-
-    await userService.update(user.dataValues.id, { refreshToken });
-    return { user: user.dataValues, accessToken, refreshToken };
+    await userService.update(user._doc._id, { refreshToken });
+    return { user: user._doc, accessToken, refreshToken };
   }
 
   async signRefreshToken(refreshToken) {
@@ -81,19 +79,19 @@ class AuthService {
       const user = await userService.findByEmail(email);
 
       //Generar token para acceder a cambiar la contraseña
-      const payload = { sub: user.dataValues.id, role: user.role.name };
+      const payload = { sub: user._doc._id, role: user._doc.isCommunity };
       const token = jwt.sign(payload, config.jwtSecretRecovery, { expiresIn: "15min" });
 
       //Generar la url para que el usuario pueda realizar el cambio
       const uri = `http://${config.recoveryUri}/change-password?token=${token}`;
 
       //Almacenar token en el usuario
-      await userService.update(user.dataValues.id, { recoveryToken: token });
+      await userService.update(user._doc._id, { recoveryToken: token });
 
       //Envíar el mail
       const mail = {
         from: config.email,
-        to: `${user.dataValues.email}`,
+        to: `${user._doc.email}`,
         subject: "Restablecer contraseña",
         html: `<head>
         <style>
@@ -109,7 +107,7 @@ class AuthService {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;">
         <div">
-          <p>Hola, ${user.dataValues.name}:</p>
+          <p>Hola, ${user._doc.name}:</p>
           <br>
           <p>Hemos recibido una solicitud para cambiar tu contraseña. Por favor, accede al siguiente enlace, el cual estará disponible durante 15 minutos, para <b>restablecer tu contraseña:</b></p>
           <br>
@@ -151,7 +149,7 @@ class AuthService {
 
       //cambiar contraseña
       const hash = await bcrypt.hash(newPassword, 10);
-      await userService.update(user.id, { password: hash, recoveryToken: null });
+      await userService.update(user._id, { password: hash, recoveryToken: null });
       return { message: "Password changed" };
 
     } catch (error) {
