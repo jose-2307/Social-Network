@@ -119,6 +119,18 @@ router.get("/post/:id",
   }
 );
 
+router.get("/recommendations/:userId", async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+    // const recommendations = await followService.getFriendRecommendations(userId);
+    const recommendations = await followService.getFriendRecommendations(userId);
+    
+    res.json(recommendations);
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 
 module.exports = router;

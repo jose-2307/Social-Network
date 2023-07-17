@@ -1,5 +1,6 @@
 const boom = require("@hapi/boom");
 const Follow = require("../models/follow.model");
+const User = require('../models/user.model')
 
 class followService {
     async create(data) {
@@ -22,6 +23,67 @@ class followService {
         return { user1Id, user2Id };
 
     }
+
+    
+
+    async getFriendRecommendations(userId) {
+      const user = await User.findById(userId);
+      if (!user) {
+        throw boom.notFound("User not found");
+      }
+      const userFollowings = await Follow.find({ user1Id: userId });
+    
+     
+      const userFollowingsIds = userFollowings.map(following => following.user2Id);
+      
+      console.log(userFollowingsIds)
+
+      return userFollowingsIds
+    }
+
+    async getFriendRecommendationsV2(userId) {
+      const user = await User.findById(userId);
+      if (!user) {
+        throw boom.notFound("User not found");
+      }
+      const userFollowings = await Follow.find({ user1Id: userId });
+      const userFollowingsIds = userFollowings.map(following => following.user2Id);
+      console.log(userFollowingsIds)
+      const followPromises = userFollowingsIds.map(async (id) => {
+        const follows = await Follow.find({ user1Id: id });
+        return { userId: id, follows };
+      });
+      console.log(followPromises)
+      const followResults = await Promise.all(followPromises);
+      console.log(followResults)
+      return followResults;
+    }
+
+    async getFriendRecommendationsV3(userId) {
+      const user = await User.findById(userId);
+      if (!user) {
+        throw boom.notFound("User not found");
+      }
+      const userFollowings = await Follow.find({ user1Id: userId });
+      const userFollowingsIds = userFollowings.map(following => following.user2Id);
+      console.log(userFollowingsIds)
+      const followPromises = userFollowingsIds.map(async (id) => {
+        const follows = await Follow.find({ user1Id: id });
+        return { userId: id, follows };
+      });
+      console.log(followPromises)
+      const followResults = await Promise.all(followPromises);
+      console.log(followResults)
+    
+      const follows = followResults.map(result => result.follows);
+      console.log(follows);
+    
+      return follows;
+    }
+    
+    
+    
+    
 }
 
 module.exports = followService;
