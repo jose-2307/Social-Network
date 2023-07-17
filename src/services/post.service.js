@@ -27,7 +27,7 @@ class postService {
             }
         }
         //Obtener los posts del usuario
-        const myPosts = await Post.find({ userId});
+        const myPosts = await Post.find({ userId });
         posts.push(myPosts);
         //Ordenar por fecha de creación
         console.log(posts);
