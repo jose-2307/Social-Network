@@ -30,7 +30,7 @@ class AuthService {
       role: user._doc.isCommunity,
     };
     const accessToken = jwt.sign(payload, config.jwtSecretLogin, {
-      expiresIn: "5min",
+      expiresIn: "25min",
     });
     const refreshToken = jwt.sign(payload, config.jwtSecretRefresh, {
       expiresIn: "90min",
