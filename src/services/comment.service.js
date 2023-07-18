@@ -5,6 +5,8 @@ class commentService {
     async create(data) {
         const comment = Comment(data);
         const newComment = await comment.save();
+
+
         return newComment;
     }
 
