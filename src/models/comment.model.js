@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const commentSchema = new Schema(
   {
-    title: {
+    comment: {
         type: String,
         required: true,
         trim: true,
