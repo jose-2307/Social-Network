@@ -6,7 +6,7 @@ const CommentService = require("./comment.service");
 
 const likeService = new LikeService();
 const commentService = new CommentService();
-class postService {
+class PostService {
     async create(data) {
         const post = Post(data);
         const newPost = await post.save();
@@ -59,4 +59,4 @@ class postService {
     }
 }
 
-module.exports = postService;
+module.exports = PostService;
