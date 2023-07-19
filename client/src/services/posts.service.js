@@ -28,8 +28,10 @@ export const createLikeBack = async (productId) => {
     });
     if(response.ok) {
         return response.json();
-    } else {
-        throw new Error("Error dando like.")
+    } else if (response.status == 409) {
+        throw new Error("El like ya existe.");
+    } else{
+        throw new Error("Error dando like.");
     }
 }
 

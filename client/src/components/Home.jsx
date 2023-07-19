@@ -114,7 +114,7 @@ const Home = () => {
                 }
             }
         }
-        fetchFeedUsers();       
+        fetchFeedUsers();     
     }, []);
 
     const giveLike = async (postId) => {
@@ -122,12 +122,23 @@ const Home = () => {
         let errorOCurred = false;
         try {
             await createLikeBack(postId);
-            // dispatch(deleteProduct(id));
-            // setCount(count - 1);
+            setUsersPosts(prevUsersPosts => {
+                const newUsersPosts = prevUsersPosts.map(post => {
+                  if (post._id === postId) {
+                    return { ...post, likes: post.likes + 1 };
+                  }
+                  return post;
+                });
+                return newUsersPosts;
+              });
         } catch (error) {
             console.log(error.message);
-            setErrorMessage(error.message);
-            errorOCurred = true;
+            if (error.message == "El like ya existe.") {
+                await removeLike(postId);
+            } else {
+                setErrorMessage(error.message);
+                errorOCurred = true;
+            }
         } finally {
             if (!errorOCurred) {
                 setLoading(false);
@@ -140,8 +151,15 @@ const Home = () => {
         let errorOCurred = false;
         try {
             await removeLikeBack(postId);
-            // dispatch(deleteProduct(id));
-            // setCount(count - 1);
+            setUsersPosts(prevUsersPosts => {
+                const newUsersPosts = prevUsersPosts.map(post => {
+                  if (post._id === postId) {
+                    return { ...post, likes: post.likes - 1 };
+                  }
+                  return post;
+                });
+                return newUsersPosts;
+            });
         } catch (error) {
             console.log(error.message);
             setErrorMessage(error.message);
@@ -157,7 +175,7 @@ const Home = () => {
         setLoading(false);
         setErrorMessage("");
     }
-console.log(users)
+console.log(usersPosts)
     return (
         <ThemeProvider theme={defaultTheme}>
         <Box sx={{ display: 'flex' }}>
