@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPostsBack } from "../services/posts.service";
+import { createLikeBack, getPostsBack, removeLikeBack } from "../services/posts.service";
 import Loader from "./Loader";
 import "./styles/Home.css";
 import { Autocomplete, Button, TextField } from "@mui/material";
@@ -25,7 +25,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
-
+import PostCard from "./PostCard";
 
 const drawerWidth = 240;
 
@@ -116,6 +116,42 @@ const Home = () => {
         }
         fetchFeedUsers();       
     }, []);
+
+    const giveLike = async (postId) => {
+        setLoading(true);
+        let errorOCurred = false;
+        try {
+            await createLikeBack(postId);
+            // dispatch(deleteProduct(id));
+            // setCount(count - 1);
+        } catch (error) {
+            console.log(error.message);
+            setErrorMessage(error.message);
+            errorOCurred = true;
+        } finally {
+            if (!errorOCurred) {
+                setLoading(false);
+            }
+        }
+    }
+
+    const removeLike = async (postId) => {
+        setLoading(true);
+        let errorOCurred = false;
+        try {
+            await removeLikeBack(postId);
+            // dispatch(deleteProduct(id));
+            // setCount(count - 1);
+        } catch (error) {
+            console.log(error.message);
+            setErrorMessage(error.message);
+            errorOCurred = true;
+        } finally {
+            if (!errorOCurred) {
+                setLoading(false);
+            }
+        }
+    }
 
     const closeErrorModal = () => { //Cierra el modal en caso de dar click en el botón de cerrar
         setLoading(false);
@@ -213,15 +249,18 @@ console.log(users)
                             ?   <h3>No hay posts</h3>
                             :   (
                                 usersPosts.map(p => (
-                                    <div className="container-post" key={p._id}>
-                                        <h3>{p.title}</h3>
-                                        <p>{p.description}</p>
-                                        <section>
-                                            <p style={{paddingRight: "10px"}}>{p.likes} likes</p>
-                                            <p>{p.comments} comentarios</p>
-                                        </section>
-                                        <p>Autor: {p.user}</p>
-                                    </div>
+                                    // <div className="container-post" key={p._id}>
+                                    //     <h3>{p.title}</h3>
+                                    //     <p>{p.description}</p>
+                                    //     <section>
+                                    //         <p style={{paddingRight: "10px"}}>{p.likes} likes</p>
+                                    //         <p>{p.comments} comentarios</p>
+                                    //     </section>
+                                    //     <p>Autor: {p.user}</p>
+                                    // </div>
+                                    p.image 
+                                        ? <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                        : <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
                                 ))
                             )
                         }
