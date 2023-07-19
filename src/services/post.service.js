@@ -3,9 +3,11 @@ const Post = require("../models/post.model");
 const Follow = require("../models/follow.model");
 const LikeService = require("./like.service");
 const CommentService = require("./comment.service");
+const UserService = require("./user.service");
 
 const likeService = new LikeService();
 const commentService = new CommentService();
+const userService = new UserService();
 class PostService {
     async create(data) {
         const post = Post(data);
@@ -18,12 +20,10 @@ class PostService {
         //Obtener los usuarios/comunidades vinculados
         const relations = await Follow.find({ $or: [{ user1Id: userId }, {user2Id: userId}] });
         //Obtener los posts de los usuarios/comunidades vinculados
-        // const follows = [];
         let posts = [];
         for (let x of relations) {
             for (let y of Object.keys(x._doc)) {
                 if ((y === "user1Id" || y === "user2Id") && x[y] != userId) { //Para evitar buscar al usuario "tratante"
-                    // follows.push(x[y]);
                     const p = await Post.find({ userId: x[y], isCommunity });
                     posts.push(p);
                 }
@@ -44,6 +44,8 @@ class PostService {
             post._doc["likes"] = likes.length;
             const comments = await commentService.findByPost(post._doc._id);
             post._doc["comments"] = comments.length;
+            const user = await userService.findOne(post._doc.userId);
+            post._doc["user"] = user._doc.name;
             resp.push(post);
         }
         return resp;

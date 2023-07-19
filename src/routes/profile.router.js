@@ -17,6 +17,17 @@ const followService = new FollowService();
 const likeService = new LikeService();
 const commentService = new CommentService();
 
+router.get("/user",
+  async (req, res, next) => {
+    try {
+      const users = await userService.find();
+      res.json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 router.get("/personal-information",
     passport.authenticate("jwt", {session: false}),
     async (req, res, next) => {
