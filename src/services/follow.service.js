@@ -20,7 +20,6 @@ class followService {
         }
         await Follow.findOneAndRemove({$or: [{ user1Id, user2Id }, {user1Id: user2Id, user2Id: user1Id}]});
         return { user1Id, user2Id };
-
     }
 }
 

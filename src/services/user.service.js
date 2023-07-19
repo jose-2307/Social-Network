@@ -36,6 +36,14 @@ class UserService {
     return { ...user, password: auth.password };
   }
 
+  async findByName(name) {
+    const user = await User.findOne({ name });
+    if (!user) {
+      return false;
+    } 
+    return user;
+  }
+
   async update(id, changes) {
     if (changes.password) {
       //La contraseña se actualiza individualmente

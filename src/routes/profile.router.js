@@ -2,16 +2,31 @@ const express = require("express");
 const passport = require("passport");
 const UserService = require("../services/user.service");
 const PostService = require("../services/post.service");
+const LikeService = require("../services/like.service");
+const CommentService = require("../services/comment.service");
 const validatorHandler = require("../middlewares/validator.handler");
 const { updateUserSchema } = require("../schemas/user.schema");
 const { createDeleteFollowSchema } = require("../schemas/follow.schema");
-const { createPostSchema, getPostSchema,getQueryPostSchema } = require("../schemas/post.schema");
+const { createPostSchema, getPostSchema,getQueryPostSchema, getLikeSchema, createCommentSchema, getCommentSchema } = require("../schemas/post.schema");
 const FollowService = require("../services/follow.service");
 
 const router = express.Router();
 const userService = new UserService();
 const postService = new PostService();
 const followService = new FollowService();
+const likeService = new LikeService();
+const commentService = new CommentService();
+
+router.get("/user",
+  async (req, res, next) => {
+    try {
+      const users = await userService.find();
+      res.json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 router.get("/personal-information",
     passport.authenticate("jwt", {session: false}),
@@ -80,7 +95,7 @@ router.post("/post",
     try {
         const user = req.user;
         const body = req.body;
-        const resp = await postService.create(body);
+        const resp = await postService.create({...body, userId: user.sub});
         res.status(201).json(resp);
     } catch (error) {
         next(error);
@@ -119,6 +134,67 @@ router.get("/post/:id",
   }
 );
 
+router.post("/post/:id/like",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getPostSchema, "params"),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { id } = req.params;
+        const resp = await likeService.create({postId: id, userId: user.sub});
+        res.status(201).json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
+router.delete("/post/:id/like",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getPostSchema, "params"),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { id } = req.params;
+        const resp = await likeService.delete(user.sub, id);
+        res.json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
+router.post("/post/:id/comment",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getPostSchema, "params"),
+  validatorHandler(createCommentSchema, "body"),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const body = req.body;
+        const { id } = req.params;
+        const resp = await commentService.create({...body, userId: user.sub, postId: id});
+        res.status(201).json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
+router.delete("/post/:id/comment/:commentId",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getCommentSchema, "params"),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const { commentId } = req.params;
+        const resp = await commentService.delete(commentId, user.sub);
+        res.status(201).json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
 
 
 module.exports = router;

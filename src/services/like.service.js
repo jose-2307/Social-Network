@@ -13,13 +13,18 @@ class followService {
         return newLike;
     }
 
+    async findByPost(postId) {
+        const likes = await Like.find({ postId });
+        return likes;
+    }
+
     async delete(userId, postId) {
         const resp = await Like.findOne({ userId, postId });
         if (!resp) {
             throw boom.notFound("Like not found.");
         }
         await Like.findOneAndRemove({ userId, postId });
-        return { user1Id, user2Id };
+        return { userId, postId };
     }
 }
 
