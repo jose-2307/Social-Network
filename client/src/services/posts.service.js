@@ -65,8 +65,8 @@ export const getCommentBack = async (id) => {
     }
 }
 
-export const postCommentBack = async (productId, {comment}) => {
-    const response = await fetchWrapper(`${ENDPOINT}/${productId}/comment`, {
+export const postCommentBack = async (id, {comment}) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${id}/comment`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
