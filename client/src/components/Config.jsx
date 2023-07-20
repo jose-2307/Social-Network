@@ -104,11 +104,6 @@ const Config = () => {
                 >
                 Red social
                 </Typography>
-                <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                    <NotificationsIcon />
-                </Badge>
-                </IconButton>
             </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>

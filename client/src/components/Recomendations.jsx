@@ -21,6 +21,7 @@ import { mainListItems, secondaryListItems } from './listItems';
 import MyCard from './Cards';
 import { getUsersFollow } from '../services/user.service';
 import { useState, useEffect } from 'react';
+import Loader from './Loader';
 
 function Copyright(props) {
   return (
@@ -152,12 +153,12 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Dashboardaa
+              Red social
             </Typography>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              {/* <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
-              </Badge>
+              </Badge> */}
             </IconButton>
           </Toolbar>
         </AppBar>
