@@ -2,16 +2,31 @@ const express = require("express");
 const passport = require("passport");
 const UserService = require("../services/user.service");
 const PostService = require("../services/post.service");
+const LikeService = require("../services/like.service");
+const CommentService = require("../services/comment.service");
 const validatorHandler = require("../middlewares/validator.handler");
 const { updateUserSchema } = require("../schemas/user.schema");
 const { createDeleteFollowSchema } = require("../schemas/follow.schema");
-const { createPostSchema, getPostSchema,getQueryPostSchema } = require("../schemas/post.schema");
+const { createPostSchema, getPostSchema,getQueryPostSchema, getLikeSchema, createCommentSchema, getCommentSchema } = require("../schemas/post.schema");
 const FollowService = require("../services/follow.service");
 
 const router = express.Router();
 const userService = new UserService();
 const postService = new PostService();
 const followService = new FollowService();
+const likeService = new LikeService();
+const commentService = new CommentService();
+
+router.get("/user",
+  async (req, res, next) => {
+    try {
+      const users = await userService.find();
+      res.json(users);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 router.get("/personal-information",
     passport.authenticate("jwt", {session: false}),
@@ -80,7 +95,7 @@ router.post("/post",
     try {
         const user = req.user;
         const body = req.body;
-        const resp = await postService.create(body);
+        const resp = await postService.create({...body, userId: user.sub});
         res.status(201).json(resp);
     } catch (error) {
         next(error);

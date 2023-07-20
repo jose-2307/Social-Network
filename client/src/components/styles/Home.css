@@ -1,0 +1,31 @@
+.container-all {
+    position: relative; /*Para que los elementos estén posicionados en torno a él*/
+}
+.container-posts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 65%;
+    align-items: center;
+    flex-direction: column;
+    /* position: relative; */
+}
+
+.container-post {
+    width: 300px;
+    height: 230px;
+    display: flex; 
+    align-items: center;
+    transition: box-shadow 0.2s ease;
+    margin: 20px 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.container-post section {
+    display: flex;
+    flex-direction: row;
+}

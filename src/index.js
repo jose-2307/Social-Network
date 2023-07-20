@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json()); //obtenemos los datos en formato json
 
-const whitelist = ["http://localhost:5173"];
+const whitelist = ["http://localhost:5173", "http://localhost:5174"];
 const options = {
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {

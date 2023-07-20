@@ -1,8 +1,14 @@
 const boom = require("@hapi/boom");
 const Post = require("../models/post.model");
 const Follow = require("../models/follow.model");
+const LikeService = require("./like.service");
+const CommentService = require("./comment.service");
+const UserService = require("./user.service");
 
-class postService {
+const likeService = new LikeService();
+const commentService = new CommentService();
+const userService = new UserService();
+class PostService {
     async create(data) {
         const post = Post(data);
         const newPost = await post.save();
@@ -13,27 +19,36 @@ class postService {
         //Buscar en Follows las relaciones del usuario
         //Obtener los usuarios/comunidades vinculados
         const relations = await Follow.find({ $or: [{ user1Id: userId }, {user2Id: userId}] });
-        console.log(relations);
         //Obtener los posts de los usuarios/comunidades vinculados
-        // const follows = [];
-        const posts = [];
+        let posts = [];
         for (let x of relations) {
-            for (let y of Object.keys(x)) {
-                if (x[y] != userId) { //Para evitar buscar al usuario "tratante"
-                    // follows.push(x[y]);
+            for (let y of Object.keys(x._doc)) {
+                if ((y === "user1Id" || y === "user2Id") && x[y] != userId) { //Para evitar buscar al usuario "tratante"
                     const p = await Post.find({ userId: x[y], isCommunity });
                     posts.push(p);
                 }
             }
         }
-        //Obtener los posts del usuario
-        const myPosts = await Post.find({ userId });
-        posts.push(myPosts);
+        // Obtener los posts del usuario si isCommunity = false
+        if (!isCommunity) {
+            const myPosts = await Post.find({ userId });
+            posts.push(myPosts);
+        }
         //Ordenar por fecha de creación
-        console.log(posts);
-
+        posts = posts.flat();
+        posts.sort((a,b) => b.createdAt - a.createdAt);    
         //Agregar número de likes y comentarios por posts
-        // return posts;
+        const resp = [];
+        for (let post of posts) {
+            const likes = await likeService.findByPost(post._doc._id);
+            post._doc["likes"] = likes.length;
+            const comments = await commentService.findByPost(post._doc._id);
+            post._doc["comments"] = comments.length;
+            const user = await userService.findOne(post._doc.userId);
+            post._doc["user"] = user._doc.name;
+            resp.push(post);
+        }
+        return resp;
     }
 
 
@@ -46,4 +61,4 @@ class postService {
     }
 }
 
-module.exports = postService;
+module.exports = PostService;
