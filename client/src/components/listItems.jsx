@@ -17,7 +17,9 @@ export const mainListItems = (
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="hola" />
+      <Link to="/create-post">
+        <ListItemText primary="Crear un post" />
+      </Link>
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>

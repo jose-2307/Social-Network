@@ -223,7 +223,6 @@ const Home = () => {
             }
         }
     }
-    console.log(isCommunity)
     return (
         <ThemeProvider theme={defaultTheme}>
         <Box sx={{ display: 'flex' }}>
@@ -380,8 +379,18 @@ const Home = () => {
                                     :   (
                                         usersPosts.map(p => (
                                             p.image 
-                                                ? <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
-                                                : <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                                ? (
+                                                    <>
+                                                    <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                                    <br key={`${p._id}<dsd`}></br>
+                                                    </>
+                                                )
+                                                : (
+                                                    <>
+                                                    <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                                    <br key={`${p._id}<dsddf`}></br>
+                                                    </>
+                                                )
                                         ))
                                     )
                                 }

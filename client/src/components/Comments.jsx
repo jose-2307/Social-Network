@@ -69,7 +69,24 @@ const Comments = () => {
         <>
             {
                 comments.length === 0 
-                ? <div>No hay comentarios</div>
+                ? (
+                    <>
+                    <div>No hay comentarios</div>
+                    <form style={{display: "flex", flexDirection: "row"}} onSubmit={handleSubmit}>
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    label="Comentario"
+                                    multiline
+                                    rows={3}
+                                    name="comment"
+                                />
+                                <Button type="submit" variant="outlined"> guardar</Button>
+                            </form>
+                            <br></br>
+                            <Button onClick={() => navigate("/")}>Regresar</Button>
+                    </>
+                )
+
                 : (
                     <div className="container-all">
                         <div className="container-posts">

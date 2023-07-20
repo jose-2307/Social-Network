@@ -27,6 +27,23 @@ export const getPostBack = async (id) => {
     }
 }
 
+export const createPostBack = async ({title, description}) => {
+    const response = await fetchWrapper(ENDPOINT, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }, 
+        body: JSON.stringify({
+            title,
+            description
+        }),
+    });
+    if(response.ok) {
+        return response.json();
+    } else{
+        throw new Error("Error creando el post.");
+    }
+}
 
 export const createLikeBack = async (productId) => {
     const response = await fetchWrapper(`${ENDPOINT}/${productId}/like`, {
