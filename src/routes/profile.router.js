@@ -50,7 +50,7 @@ router.patch("/personal-information",
       const user = req.user;
       const body = req.body;
       const resp = await userService.update(user.sub,body);
-      delete resp.dataValues.recoveryToken;
+      delete resp._doc.recoveryToken;
       res.json(resp);
     } catch (error) {
       next(error);
