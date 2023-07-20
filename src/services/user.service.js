@@ -58,9 +58,19 @@ class UserService {
       }
       return { message: "password changed" };
     }
+    else{
+      const resp = await User.updateOne({ _id: id }, changes);
+      return resp;
+    }
+  }
 
-    const resp = await User.updateOne({ _id: id }, changes);
-    return resp;
+  async changePass(id, changes) {
+    if (changes.password) {
+      //La contraseña se actualiza individualmente
+      const hash = await bcrypt.hash(changes.password, 10);
+      await Auth.updateOne({ userId: id }, { password: hash });
+      return { message: "password changed" };
+    }
   }
 }
 
