@@ -96,7 +96,7 @@ const Comments = () => {
                                 <Button type="submit" variant="outlined"> guardar</Button>
                             </form>
                             <br></br>
-                            
+                            <Button onClick={() => navigate("/")}>Regresar</Button>
                         </div>
                     </div>
                 )
