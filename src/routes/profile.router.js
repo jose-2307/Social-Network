@@ -49,8 +49,7 @@ router.patch("/personal-information",
     try {
       const user = req.user;
       const body = req.body;
-      const resp = await userService.update(user.sub,body);
-      delete resp._doc.recoveryToken;
+      const resp = await userService.changePass(user.sub,body);
       res.json(resp);
     } catch (error) {
       next(error);
