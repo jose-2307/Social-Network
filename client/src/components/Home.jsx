@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { createLikeBack, getPostsBack, removeLikeBack } from "../services/posts.service";
 import Loader from "./Loader";
 import "./styles/Home.css";
-import { Autocomplete, Button, TextField } from "@mui/material";
-import { getUsersBack } from "../services/user.service";
+import { Autocomplete, Backdrop, Button, Fade, Modal, TextField } from "@mui/material";
+import { getTagsBack, getUsersBack, updateTagBack } from "../services/user.service";
 
 import * as React from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
@@ -26,6 +26,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import PostCard from "./PostCard";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -84,6 +85,8 @@ const Home = () => {
     const [usersPosts, setUsersPosts] = useState([]);
     const [communityPosts, setCommunityPosts] = useState([]);
     const [users, setUsers] = useState([]);
+    const [open2, setOpen2] = useState(false); //Controla el abrir y cerrar del modal
+    const [tags, setTags] = useState([]);
     
     
     const [open, setOpen] = React.useState(true);
@@ -104,6 +107,8 @@ const Home = () => {
                     return {label: x.name, id: x._id, isCommunity: x.isCommunity};
                 });
                 setUsers(resp);
+                const allTags = await getTagsBack();
+                setTags(allTags);
             } catch (error) {
                 console.log(error.message);
                 setErrorMessage(error.message);
@@ -175,7 +180,32 @@ const Home = () => {
         setLoading(false);
         setErrorMessage("");
     }
-console.log(usersPosts)
+
+    const changeTagStatus = async (id) => {
+        setLoading(true);
+        let errorOCurred = false;
+        try {
+            await updateTagBack(id);
+            setTags(prevTags => {
+                const newTags = prevTags.map(tag => {
+                if (tag._id === id) {
+                    return { ...tag, visualized: true };
+                }
+                return tag;
+                });
+                return newTags;
+            });
+        } catch (error) {
+            console.log(error.message);
+            setErrorMessage(error.message);
+            errorOCurred = true;
+        } finally {
+            if (!errorOCurred) {
+                setLoading(false);
+            }
+        }
+    }
+console.log(tags)
     return (
         <ThemeProvider theme={defaultTheme}>
         <Box sx={{ display: 'flex' }}>
@@ -205,12 +235,73 @@ console.log(usersPosts)
                 noWrap
                 sx={{ flexGrow: 1 }}
                 >
-                Dashboardaa
+                Red social
                 </Typography>
                 <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                    <NotificationsIcon />
-                </Badge>
+                    <Badge 
+                    badgeContent={tags.length ? tags.length : null}
+                    color="secondary">
+                        <NotificationsIcon onClick={() => {setOpen2(true)}}/>
+                        {open2 && ( 
+                            <Modal
+                                aria-labelledby="transition-modal-title"
+                                aria-describedby="transition-modal-description"
+                                open={open} 
+                                onClose={() => {setOpen2(false)}}
+                                closeAfterTransition
+                                slots={{ backdrop: Backdrop }}
+                                slotProps={{
+                                backdrop: {
+                                    timeout: 500,
+                                },
+                                }}
+                            >
+                                <Fade in={open}>
+                                    <Box sx={{
+                                        position: "absolute",
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        width: 400,
+                                        bgcolor: 'background.paper',
+                                        border: '2px solid #000',
+                                        boxShadow: 24,
+                                        p: 4,}}
+                                    >
+                                        <Typography id="transition-modal-title" variant="h6" component="h2">
+                                            Notificaciones
+                                        </Typography>
+                                        { tags.length === 0
+                                            ? (
+                                                <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+                                                    No hay etiquetas
+                                                </Typography>
+                                            )
+                                            : (
+                                                tags.map(t => (
+                                                    (!t.visualized 
+                                                        ? (
+                                                        <Typography id="transition-modal-description" sx={{ mt: 2 }} key={t._id}>
+                                                            <Link style={{color: "rgba(0, 0, 0, 0.54)"}}to={`/${t.comment.postId}/comments`} onClick={() => changeTagStatus(t._id)}>
+                                                                {t.name} te etiquitó en un comentario
+                                                            </Link>
+                                                        </Typography>
+                                                        )
+                                                        : (
+                                                            <Typography id="transition-modal-description" sx={{ mt: 2 }} key={t._id}>
+                                                                {t.name} te etiquitó en un comentario
+                                                            </Typography>
+                                                        )
+                                                    )
+                                                ))
+                                            )
+                                        }
+                                        <br></br>
+                                    </Box>
+                                </Fade>
+                            </Modal>
+                        )}
+                    </Badge>
                 </IconButton>
             </Toolbar>
             </AppBar>

@@ -51,6 +51,25 @@ class CommentService {
         await Comment.findOneAndRemove({ _id: id });
         return { id };
     }
+
+    async findTags(userId) {
+        const tags = await Tag.find({userId});
+        for (let tag of tags) {
+            const comment = await Comment.findOne({_id: tag.commentId});
+            if (!comment) {
+                throw boom.notFound("Comment not found.");
+            }
+            const user = await userService.findOne(comment.userId);
+            tag._doc["name"] = user.name;
+            tag._doc["comment"] = comment;
+        }
+        return tags;
+    }
+
+    async updateTag(data) {
+        await Tag.findOneAndUpdate({_id: data.id}, {visualized: true});
+        return {message: "Tag changed"}
+    }
 }
 
 module.exports = CommentService;

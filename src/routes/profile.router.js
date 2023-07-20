@@ -208,5 +208,30 @@ router.delete("/post/:id/comment/:commentId",
   }
 );
 
+router.get("/tags",
+  passport.authenticate("jwt", {session: false}),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const resp = await commentService.findTags(user.sub);
+        res.json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
+router.patch("/tags",
+  passport.authenticate("jwt", {session: false}),
+  async (req, res, next) => {
+    try {
+        const body = req.body;
+        const resp = await commentService.updateTag(body);
+        res.json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
 
 module.exports = router;
