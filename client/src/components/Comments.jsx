@@ -7,28 +7,6 @@ import PostCard from "./PostCard";
 import CommentData from "./CommentData";
 import { Button, Card, TextField } from "@mui/material";
 import TextInput from "./TextInput";
-import { Formik, Form } from "formik";
-
-// const validate = (values) => {
-//     const errors = {};
-
-//     if (!values.name) {
-//         errors.name = "Requerido";
-//     } else if (values.name.length < 3) {
-//         errors.name = "El nombre debe tener al menos 3 caracteres";
-//     } else if (values.name.length > 30) {
-//         errors.name = "El nombre debe tener a lo más 30 caracteres";
-//     }
-
-//     if (!values.salePriceKilo) {
-//         errors.salePriceKilo = "Requerido";
-//     } else if (values.purchasePriceKilo <= 0) {
-//         errors.salePriceKilo = "El valor debe ser positivo";
-//     }
-
-
-//     return errors;
-// }
 
 const Comments = () => {
     const [loading, setLoading] = useState(false);
@@ -117,6 +95,7 @@ const Comments = () => {
                                 />
                                 <Button type="submit" variant="outlined"> guardar</Button>
                             </form>
+                            <br></br>
                             
                         </div>
                     </div>
