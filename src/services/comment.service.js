@@ -16,6 +16,8 @@ class CommentService {
         }
         const comment = Comment(data);
         const newComment = await comment.save();
+        const user = await userService.findOne(newComment.userId);
+        newComment._doc["name"] = user._doc.name;
         //Etiquetado
         const splitedValues = data.comment.split(" ");
         const tags = splitedValues.filter(x => x[0] == "@");

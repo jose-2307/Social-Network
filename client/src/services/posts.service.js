@@ -64,3 +64,20 @@ export const getCommentBack = async (id) => {
         throw new Error("Error obtiendo comentarios.")
     }
 }
+
+export const postCommentBack = async (productId, {comment}) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${productId}/comment`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        }, 
+        body: JSON.stringify({
+            comment,
+        }),
+    });
+    if(response.ok) {
+        return response.json();
+    } else{
+        throw new Error("Error comentando.");
+    }
+}

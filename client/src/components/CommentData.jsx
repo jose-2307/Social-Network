@@ -4,7 +4,7 @@ const CommentData = ({comment, user}) => {
     return (
         <div style={{borderBottom: "1px solid grey", width: 345}}>
             <CardContent >
-                <Typography variant="body2" color="text.secondary">{user}: {comment}</Typography>
+                <Typography variant="body2" color="text.secondary"><b>{user}:</b> {comment}</Typography>
             </CardContent>
         </div>
     )   

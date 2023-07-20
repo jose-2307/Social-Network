@@ -1,11 +1,34 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
-import { getCommentBack, getPostBack } from "../services/posts.service";
+import { getCommentBack, getPostBack, postCommentBack } from "../services/posts.service";
 import { useNavigate, useParams } from "react-router-dom";
 import "./styles/Home.css"
 import PostCard from "./PostCard";
 import CommentData from "./CommentData";
-import { Card } from "@mui/material";
+import { Button, Card, TextField } from "@mui/material";
+import TextInput from "./TextInput";
+import { Formik, Form } from "formik";
+
+// const validate = (values) => {
+//     const errors = {};
+
+//     if (!values.name) {
+//         errors.name = "Requerido";
+//     } else if (values.name.length < 3) {
+//         errors.name = "El nombre debe tener al menos 3 caracteres";
+//     } else if (values.name.length > 30) {
+//         errors.name = "El nombre debe tener a lo más 30 caracteres";
+//     }
+
+//     if (!values.salePriceKilo) {
+//         errors.salePriceKilo = "Requerido";
+//     } else if (values.purchasePriceKilo <= 0) {
+//         errors.salePriceKilo = "El valor debe ser positivo";
+//     }
+
+
+//     return errors;
+// }
 
 const Comments = () => {
     const [loading, setLoading] = useState(false);
@@ -41,8 +64,29 @@ const Comments = () => {
         setLoading(false);
         setErrorMessage("");
     }
-    console.log(comments)
-    console.log(post)
+
+    const handleSubmit = async (e) => {
+        setLoading(true);
+        let errorOCurred = false;
+        try {
+            e.preventDefault();
+            const data = Array.from(new FormData(e.target))
+            let newComment = Object.fromEntries(data).comment;
+            newComment = await postCommentBack(id, {comment: newComment});
+            console.log(newComment)
+            setComments([...comments, newComment.newComment]);
+            
+        } catch (error) {
+            console.log(error.message);
+            setErrorMessage(error.message);
+            errorOCurred = true;
+        } finally {
+            if (!errorOCurred) {
+                setLoading(false);
+            }
+        }
+    }
+
     return (
         <>
             {
@@ -62,6 +106,17 @@ const Comments = () => {
                                     <CommentData key={c._id} comment={c.comment} user={c.name}/>
                                 ))}
                             </Card>
+                            <br></br>
+                            <form style={{display: "flex", flexDirection: "row"}} onSubmit={handleSubmit}>
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    label="Comentario"
+                                    multiline
+                                    rows={3}
+                                    name="comment"
+                                />
+                                <Button type="submit" variant="outlined"> guardar</Button>
+                            </form>
                             
                         </div>
                     </div>
