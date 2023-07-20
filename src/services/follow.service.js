@@ -8,6 +8,9 @@ const userService = new UserService();
 class followService {
     async create(data) {
         const { user1Id, user2Id } = data;
+        if (user1Id === user2Id){
+          throw boom.conflict("Same users");
+        }
         const relation = await Follow.findOne({$or: [{ user1Id, user2Id }, {user1Id: user2Id, user2Id: user1Id}]});
         if (relation) {
             throw boom.conflict("Existing relationship");

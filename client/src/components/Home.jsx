@@ -3,7 +3,9 @@ import { createLikeBack, getPostsBack, removeLikeBack } from "../services/posts.
 import Loader from "./Loader";
 import "./styles/Home.css";
 import { Autocomplete, Backdrop, Button, Fade, Modal, TextField } from "@mui/material";
-import { getTagsBack, getUsersBack, updateTagBack } from "../services/user.service";
+import { createFollow, getTagsBack, getUsersBack, updateTagBack } from "../services/user.service";
+
+import { getFriendsBack } from "../services/user.service";
 
 import * as React from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
@@ -87,9 +89,11 @@ const Home = () => {
     const [users, setUsers] = useState([]);
     const [open2, setOpen2] = useState(false); //Controla el abrir y cerrar del modal
     const [tags, setTags] = useState([]);
+    const [friends, setFriends] = useState([]);
     const [isCommunity, setIsCommunity] = useState(false);
-    
+    const [successMessage, setSuccessMessage] = useState("");
     const [open, setOpen] = React.useState(true);
+    const [selectedUser,setSelectedUser] = useState("");
     const toggleDrawer = () => {
       setOpen(!open);
     };
@@ -103,6 +107,8 @@ const Home = () => {
                 const data = await getPostsBack();
                 setUsersPosts(data);
                 const allUsers = await getUsersBack();
+                const Friends = await getFriendsBack();
+                setFriends(Friends);
                 const resp = allUsers.map(x => {
                     return {label: x.name, id: x._id, isCommunity: x.isCommunity};
                 });
@@ -223,6 +229,43 @@ const Home = () => {
             }
         }
     }
+
+    const handleSearch = async (selectedUser) =>{
+        setErrorMessage("");
+        setSuccessMessage("");
+        if (!selectedUser) {
+            console.log(selectedUser);
+        }
+        console.log(selectedUser.id);
+        // Verificar si el usuario seleccionado ya está en la lista de follows
+        const userAlreadyFollowed = friends.some(
+          (followedUser) => followedUser._id == selectedUser.id
+        );
+        
+        console.log(friends);
+        console.log(userAlreadyFollowed);
+
+        if(userAlreadyFollowed){
+            console.log("Ya sigues a este perfil");
+            alert("Ya sigues a este perfil");
+            return;
+        }
+
+        try {
+            await createFollow(selectedUser.id);
+            if (selectedUser.isCommunity){
+                console.log("Comunidad seguida exitosamente");
+                alert("Comunidad seguida exitosamente");
+            }
+            else{
+                console.log("Usuario seguido exitosamente");
+                alert("Usuario seguido exitosamente");
+            }
+          } catch (error) {
+            alert("Error al seguir al usuario. Intente nuevamente");
+          }
+    };
+
     return (
         <ThemeProvider theme={defaultTheme}>
         <Box sx={{ display: 'flex' }}>
@@ -362,10 +405,12 @@ const Home = () => {
                         disablePortal
                         id="combo-box-demo"
                         options={users}
+                        value={selectedUser}
+                        onChange={(event, newValue) => setSelectedUser(newValue)}                 
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="User" />}
                     />
-                    <Button style={{ paddingLeft: "20px" }}>Buscar</Button>
+                    <Button style={{ paddingLeft: "20px" }} onClick={() => handleSearch(selectedUser)}>Buscar</Button>
                 </section>
                 <Button onClick={() => getCommunityPosts()}>Switch feed</Button>
                 {!isCommunity 

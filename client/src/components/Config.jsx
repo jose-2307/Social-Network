@@ -63,12 +63,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 const Config = () => {
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [open, setOpen] = React.useState(true);
 
@@ -78,33 +73,6 @@ const Config = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (newPassword !== confirmPassword) {
-      setErrorMessage("New password and confirm password do not match");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Assuming changePassword is a function that makes an API call to change the password
-      await changePassword(oldPassword, newPassword);
-      setSuccessMessage("Password changed successfully!");
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-    } catch (error) {
-      setErrorMessage("Failed to change password. Please try again.");
-    } finally {
-      setLoading(false);
-      setSnackbarOpen(true);
-    }
   };
 
   return (
@@ -134,7 +102,7 @@ const Config = () => {
                 noWrap
                 sx={{ flexGrow: 1 }}
                 >
-                Dashboardaa
+                Red social
                 </Typography>
                 <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">
