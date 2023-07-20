@@ -150,7 +150,7 @@ const ChangePassword = () => {
                 noWrap
                 sx={{ flexGrow: 1 }}
                 >
-                Dashboardaa
+                Red social
                 </Typography>
                 <IconButton color="inherit">
                 <Badge badgeContent={4} color="secondary">

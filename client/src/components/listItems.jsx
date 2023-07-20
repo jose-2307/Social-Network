@@ -41,7 +41,9 @@ export const mainListItems = (
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon>
-      <ListItemText primary="Integrations" />
+      <Link to= "/config">
+        <ListItemText primary="Configuración" />
+      </Link>
     </ListItemButton>
   </React.Fragment>
 );
