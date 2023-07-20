@@ -57,6 +57,20 @@ router.patch("/personal-information",
   }
 );
 
+
+router.get("/follow",
+  passport.authenticate("jwt", {session: false}),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const resp = await followService.getFriends(user.sub);
+        res.json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
 router.post("/follow",
   passport.authenticate("jwt", {session: false}),
   validatorHandler(createDeleteFollowSchema, "body"),
