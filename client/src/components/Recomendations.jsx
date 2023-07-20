@@ -206,8 +206,9 @@ export default function Dashboard() {
                     {recommendations.map((user) => (
                       <Grid item>
                         
-                        
-                        <MyCard name={user.name} />
+                        <MyCard name={user.name} 
+                                id = {user.id}
+                        />
                       </Grid>))}
                     
             </Grid>

@@ -2,12 +2,13 @@ import React from "react";
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia } from "@mui/material";
 import { createFollow } from "../services/user.service";
 
-export default function MyCard({ name }) {
+export default function MyCard({ name , id }) {
 
   const handleFollowClick = async () => {
     try {
-      await createFollow();
+      await createFollow(id);
       console.log(`Usuario ${name} seguido exitosamente.`);
+      window.location.reload();
     } catch (error) {
       console.log("Error siguiendo al usuario:", error);
     }
