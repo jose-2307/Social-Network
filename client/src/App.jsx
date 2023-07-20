@@ -4,6 +4,9 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import RecoveryPassword from './components/RecoveryPassword';
 import ChangePassword from './components/ChangePassword';
+import MyCard from './components/Cards';
+import Dashboard from './components/Recomendations';
+
 
 const App = () => {
 
@@ -15,6 +18,7 @@ const App = () => {
         <Route path="/sign-up" element={<SignUp />}/>
         <Route path="/recovery-password" element={<RecoveryPassword />}/>
         <Route path="/change-password" element={<ChangePassword />}/>
+        <Route path="/recommendations" element={<Dashboard/>}/>
         <Route path="*" element={"404: ruta no encontrada"} />
       </Routes>
     </BrowserRouter>
