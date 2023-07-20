@@ -19,6 +19,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import MyCard from './Cards';
+import { getUsersFollow } from '../services/user.service';
+import { useState, useEffect } from 'react';
 
 function Copyright(props) {
   return (
@@ -87,9 +89,42 @@ export default function Dashboard() {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const [recommendations, setRecommendations] = React.useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    setLoading(true);
+    let errorOCurred = false;
+    const fetchFeedUsers = async () => {
+        try {
+            const data = await getUsersFollow();
+            setRecommendations(data);
+            
+        } catch (error) {
+            console.log(error.message);
+            setErrorMessage(error.message);
+            errorOCurred = true;
+        } finally {
+            if (!errorOCurred) {
+                setLoading(false);
+            }
+        }
+    }
+    fetchFeedUsers();     
+    }, []);
+
+ const closeErrorModal = () => { //Cierra el modal en caso de dar click en el botón de cerrar
+        setLoading(false);
+        setErrorMessage("");
+    }
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+    {recommendations.length === 0 
+        ? <div>No hay recomendados</div>
+        : (
+            <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -167,36 +202,23 @@ export default function Dashboard() {
 
             </Grid>
             <Grid container spacing={3} direction={'row'} justifyContent={'center'} pt={10}>
-                    <Grid item>
-                        <MyCard/>
-
-                    </Grid>
-                    <Grid item>
-                        <MyCard/>
-
-                    </Grid>
-                    <Grid item>
-                        <MyCard/>
-
-                    </Grid>
-                    <Grid item>
-                        <MyCard/>
-
-                    </Grid>
-                    <Grid item>
-                        <MyCard/>
-
-                    </Grid>
-                    <Grid item>
-                        <MyCard/>
-
-                    </Grid>
+                     {console.log(recommendations)}
+                    {recommendations.map((user) => (
+                      <Grid item>
+                        
+                        
+                        <MyCard name={user.name} />
+                      </Grid>))}
                     
-                </Grid>
+            </Grid>
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
+        {loading && (<Loader error={errorMessage} closeErrorModal={closeErrorModal}></Loader>)}
       </Box>
     </ThemeProvider>
-  );
+        )
+    }
+    
+    </>);
 }

@@ -134,11 +134,14 @@ router.get("/post/:id",
   }
 );
 
-router.get("/recommendations/:userId", async (req, res, next) => {
+router.get("/recommendations",
+  
+  passport.authenticate("jwt", {session: false}),
+  async (req, res, next) => {
   try {
-    const userId = req.params.userId;
+    const user = req.user;
     // const recommendations = await followService.getFriendRecommendations(userId);
-    const recommendations = await followService.getFriendRecommendationsV4(userId);
+    const recommendations = await followService.getFriendRecommendationsV4(user.sub);
     
     res.json(recommendations);
   } catch (error) {
@@ -146,6 +149,18 @@ router.get("/recommendations/:userId", async (req, res, next) => {
   }
 });
 
+
+// router.get("/recommendations/:userId", async (req, res, next) => {
+//   try {
+//     const userId = req.params.userId;
+//     // const recommendations = await followService.getFriendRecommendations(userId);
+//     const recommendations = await followService.getFriendRecommendationsV4(userId);
+    
+//     res.json(recommendations);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 
 module.exports = router;

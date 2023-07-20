@@ -80,29 +80,70 @@ class followService {
       return follows;
     }
     
+    
+    // async getFriendRecommendationsV4(userId) {
+    //   const user = await User.findById(userId);
+    //   if (!user) {
+    //     throw boom.notFound("User not found");
+    //   }
+    //   const userFollowings = await Follow.find({ user1Id: userId });
+    //   const userFollowingsIds = userFollowings.map(following => following.user2Id);
+    //   // console.log('////////////////------///////////////////////')
+    //   // console.log(userFollowingsIds)
+    //   // console.log('////////////////------///////////////////////')
+    //   const followPromises = userFollowingsIds.map(async (id) => {
+    //     const follows = await Follow.find({ user1Id: id });
+    //     return { userId: id, follows };
+    //   });
+     
+    //   const followResults = await Promise.all(followPromises);
+    //   console.log('////////////////------///////////////////////')
+    //   console.log(followResults)
+    //   console.log('////////////////------///////////////////////')
+    //   //
+    //   const uniqueFollowUser2Ids = Array.from(new Set(followResults.flatMap(result => result.follows.map(f => f.user2Id))));
+    
+    //   const follows = uniqueFollowUser2Ids.filter(id => !userFollowingsIds.includes(id) && id !== userId);
+    //   // console.log('////////////////------///////////////////////')
+    //   // console.log(follows);
+    //   // console.log('////////////////------///////////////////////')
+    //   const recommendationsWithNames = await Promise.all(follows.map(async (id) => {
+    //     const user = await User.findById(id);
+    //     return { userId: id, name: user ? user.name : "Unknown" };
+    //   }));
+    //   // console.log('////////////////------///////////////////////')
+    //   // console.log(recommendationsWithNames)
+    //   // console.log('////////////////------///////////////////////')
+    //   return recommendationsWithNames;
+    // }
+
     async getFriendRecommendationsV4(userId) {
       const user = await User.findById(userId);
       if (!user) {
         throw boom.notFound("User not found");
       }
+
       const userFollowings = await Follow.find({ user1Id: userId });
       const userFollowingsIds = userFollowings.map(following => following.user2Id);
-      console.log(userFollowingsIds)
+
       const followPromises = userFollowingsIds.map(async (id) => {
         const follows = await Follow.find({ user1Id: id });
-        return { userId: id, follows };
+        const followIds = follows.map(follow => follow.user2Id); // Extract the user2Id from each follow
+        return followIds;
       });
-      console.log(followPromises)
+    
       const followResults = await Promise.all(followPromises);
-      console.log(followResults)
 
-      //
-      const uniqueFollowUser2Ids = Array.from(new Set(followResults.flatMap(result => result.follows.map(f => f.user2Id))));
-    
-      const follows = uniqueFollowUser2Ids.filter(id => !userFollowingsIds.includes(id) && id !== userId);
-      console.log(follows);
-    
-      return follows;
+      const uniqueFollowUser2Ids = Array.from(new Set(followResults.flat())); // Flatten the arrays and make them unique
+      const follows = uniqueFollowUser2Ids.filter(id => id !== userId);
+
+      const recommendationsWithNames = await Promise.all(follows.map(async (id) => {
+        const user = await User.findById(id);
+        return { userId: id, name: user ? user.name : "Unknown" };
+      }));
+
+      return recommendationsWithNames.slice(1);
+      
     }
     
     

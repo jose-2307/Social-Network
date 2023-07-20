@@ -1,7 +1,18 @@
 import React from "react";
 import { Button, Card, CardActionArea, CardActions, CardContent, CardMedia } from "@mui/material";
+import { createFollow } from "../services/user.service";
 
-export default function MyCard({ size }) {
+export default function MyCard({ name }) {
+
+  const handleFollowClick = async () => {
+    try {
+      await createFollow();
+      console.log(`Usuario ${name} seguido exitosamente.`);
+    } catch (error) {
+      console.log("Error siguiendo al usuario:", error);
+    }
+  };
+
   return (
     <Card
       sx={{
@@ -9,8 +20,6 @@ export default function MyCard({ size }) {
         "&:hover": {
           transform: "scale(1.05)",
         },
-       maxWidth:300
-       
       }}
     >
       <CardActionArea>
@@ -19,16 +28,17 @@ export default function MyCard({ size }) {
           image="https://picsum.photos/200/300"
           height="200"
           alt="Card Image"
-        />
+        /> 
         <CardContent>
-          <h2>Camilo Clift</h2>
-          <p>Soy informático, me gusta jugar Valorant</p>
+          <h2>{name}</h2>
+          <p>¡Tienes un amigo en común con {name}! ¿Te gustaría agregarlo?</p>
         </CardContent>
       </CardActionArea>
 
       <CardActions>
-        <Button variant="contained" color='success'>Agregar</Button>
-        
+        <Button variant="contained" color="success" onClick={handleFollowClick}>
+          Agregar
+        </Button>
       </CardActions>
     </Card>
   );
