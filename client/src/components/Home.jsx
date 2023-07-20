@@ -87,7 +87,7 @@ const Home = () => {
     const [users, setUsers] = useState([]);
     const [open2, setOpen2] = useState(false); //Controla el abrir y cerrar del modal
     const [tags, setTags] = useState([]);
-    
+    const [isCommunity, setIsCommunity] = useState(false);
     
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
@@ -121,6 +121,24 @@ const Home = () => {
         }
         fetchFeedUsers();     
     }, []);
+
+    const getCommunityPosts = async () => {
+        setIsCommunity(!isCommunity);
+        setLoading(true);
+        let errorOCurred = false;
+        try {
+            const data = await getPostsBack(true);
+            setCommunityPosts(data);
+        } catch (error) {
+            console.log(error.message);
+            setErrorMessage(error.message);
+            errorOCurred = true;
+        } finally {
+            if (!errorOCurred) {
+                setLoading(false);
+            }
+        }
+    }
 
     const giveLike = async (postId) => {
         setLoading(true);
@@ -205,7 +223,7 @@ const Home = () => {
             }
         }
     }
-console.log(tags)
+    console.log(isCommunity)
     return (
         <ThemeProvider theme={defaultTheme}>
         <Box sx={{ display: 'flex' }}>
@@ -350,22 +368,48 @@ console.log(tags)
                     />
                     <Button style={{ paddingLeft: "20px" }}>Buscar</Button>
                 </section>
+                <Button onClick={() => getCommunityPosts()}>Switch feed</Button>
+                {!isCommunity 
+                    ? (
+                        <>
+                        <h1>Feed usuarios</h1>
+                        <div className="container-all">
+                            <div className="container-posts">
+                                {usersPosts.length === 0 
+                                    ?   <h3>No hay posts</h3>
+                                    :   (
+                                        usersPosts.map(p => (
+                                            p.image 
+                                                ? <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                                : <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                        ))
+                                    )
+                                }
+                            </div>
+                        </div>
+                        </>
+                    ) 
+                    : (
+                        <>
+                        <h1>Feed comunidades</h1>
+                        <div className="container-all">
+                            <div className="container-posts">
+                                {communityPosts.length === 0 
+                                    ?   <h3>No hay posts</h3>
+                                    :   (
+                                        communityPosts.map(p => (
+                                            p.image 
+                                                ? <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                                : <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
+                                        ))
+                                    )
+                                }
+                            </div>
+                        </div>
+                        </>
+                    )
+                }
                 
-                <h1>Feed usuarios</h1>
-                <div className="container-all">
-                    <div className="container-posts">
-                        {usersPosts.length === 0 
-                            ?   <h3>No hay posts</h3>
-                            :   (
-                                usersPosts.map(p => (
-                                    p.image 
-                                        ? <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
-                                        : <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
-                                ))
-                            )
-                        }
-                    </div>
-                </div>
                 {loading && (<Loader error={errorMessage} closeErrorModal={closeErrorModal}></Loader>)}
             </div>
             </Container>
