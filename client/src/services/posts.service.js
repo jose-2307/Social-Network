@@ -17,3 +17,32 @@ export const getPostsBack = async (isCommunity) => {
         throw new Error("Error obtiendo posts.")
     }
 }
+
+
+export const createLikeBack = async (productId) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${productId}/like`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+    if(response.ok) {
+        return response.json();
+    } else if (response.status == 409) {
+        throw new Error("El like ya existe.");
+    } else{
+        throw new Error("Error dando like.");
+    }
+}
+
+
+export const removeLikeBack = async (productId) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${productId}/like`, {
+        method: "DELETE",
+    });
+    if(response.ok) {
+        return response.json();
+    } else {
+        throw new Error("Error quitando like.")
+    }
+}
