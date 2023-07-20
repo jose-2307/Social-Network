@@ -132,35 +132,21 @@ router.get("/post/:id",
   }
 );
 
-router.post("/post/:id/like",
+router.get("/recommendations",
+  
   passport.authenticate("jwt", {session: false}),
-  validatorHandler(getPostSchema, "params"),
   async (req, res, next) => {
-    try {
-        const user = req.user;
-        const { id } = req.params;
-        const resp = await likeService.create({postId: id, userId: user.sub});
-        res.status(201).json(resp);
-    } catch (error) {
-        next(error);
-    }
+  try {
+    const user = req.user;
+    // const recommendations = await followService.getFriendRecommendations(userId);
+    const recommendations = await followService.getFriendRecommendationsV4(user.sub);
+    
+    res.json(recommendations);
+  } catch (error) {
+    next(error);
   }
-);
+});
 
-router.delete("/post/:id/like",
-  passport.authenticate("jwt", {session: false}),
-  validatorHandler(getPostSchema, "params"),
-  async (req, res, next) => {
-    try {
-        const user = req.user;
-        const { id } = req.params;
-        const resp = await likeService.delete(user.sub, id);
-        res.json(resp);
-    } catch (error) {
-        next(error);
-    }
-  }
-);
 
 router.post("/post/:id/comment",
   passport.authenticate("jwt", {session: false}),

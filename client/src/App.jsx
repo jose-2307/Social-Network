@@ -6,6 +6,8 @@ import RecoveryPassword from './components/RecoveryPassword';
 import ChangePassword from './components/ChangePassword';
 import Comments from './components/Comments';
 import Config from "./components/Config";
+import Dashboard from './components/Recomendations';
+
 
 const App = () => {
 
@@ -19,6 +21,7 @@ const App = () => {
         <Route path="/change-password" element={<ChangePassword />}/>
         <Route path="/:id/comments" element={<Comments />}/>
         <Route path="/config" element={<Config />}/>
+        <Route path="/recommendations" element={<Dashboard/>}/>
         <Route path="*" element={"404: ruta no encontrada"} />
       </Routes>
     </BrowserRouter>
