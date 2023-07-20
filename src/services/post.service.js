@@ -55,8 +55,10 @@ class PostService {
     async findOne(id) {
         const post = await Post.findOne({ _id: id });
         if (!post) {
-        throw boom.notFound("post not found");
+            throw boom.notFound("post not found");
         }
+        const user = await userService.findOne(post._doc.userId);
+        post._doc["user"] = user._doc.name;
         return post;
     }
 }

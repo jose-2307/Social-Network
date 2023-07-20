@@ -267,15 +267,6 @@ console.log(usersPosts)
                             ?   <h3>No hay posts</h3>
                             :   (
                                 usersPosts.map(p => (
-                                    // <div className="container-post" key={p._id}>
-                                    //     <h3>{p.title}</h3>
-                                    //     <p>{p.description}</p>
-                                    //     <section>
-                                    //         <p style={{paddingRight: "10px"}}>{p.likes} likes</p>
-                                    //         <p>{p.comments} comentarios</p>
-                                    //     </section>
-                                    //     <p>Autor: {p.user}</p>
-                                    // </div>
                                     p.image 
                                         ? <PostCard key={p._id} image={p.image} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>
                                         : <PostCard key={p._id} title={p.title} description={p.description} likes={p.likes} comments={p.comments} author={p.user} giveLike={giveLike} id={p._id}/>

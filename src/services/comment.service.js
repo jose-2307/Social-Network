@@ -34,6 +34,10 @@ class CommentService {
 
     async findByPost(postId) {
         const comments = await Comment.find({ postId });
+        for (let comment of comments) {
+            const user = await userService.findOne(comment.userId);
+            comment._doc["name"] = user.name;
+        }
         return comments;
     }
 

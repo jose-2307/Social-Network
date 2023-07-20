@@ -124,7 +124,6 @@ router.get("/post/:id",
   validatorHandler(getPostSchema, "params"),
   async (req, res, next) => {
     try {
-        // const user = req.user;
         const { id } = req.params;
         const resp = await postService.findOne(id);
         res.json(resp);
@@ -175,6 +174,20 @@ router.post("/post/:id/comment",
         const { id } = req.params;
         const resp = await commentService.create({...body, userId: user.sub, postId: id});
         res.status(201).json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
+router.get("/post/:id/comment",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getPostSchema, "params"),
+  async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const resp = await commentService.findByPost(id);
+        res.json(resp);
     } catch (error) {
         next(error);
     }

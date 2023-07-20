@@ -18,6 +18,15 @@ export const getPostsBack = async (isCommunity) => {
     }
 }
 
+export const getPostBack = async (id) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${id}`);
+    if(response.ok) {
+        return response.json();
+    } else {
+        throw new Error("Error obtiendo el post.")
+    }
+}
+
 
 export const createLikeBack = async (productId) => {
     const response = await fetchWrapper(`${ENDPOINT}/${productId}/like`, {
@@ -44,5 +53,14 @@ export const removeLikeBack = async (productId) => {
         return response.json();
     } else {
         throw new Error("Error quitando like.")
+    }
+}
+
+export const getCommentBack = async (id) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${id}/comment`);
+    if(response.ok) {
+        return response.json();
+    } else {
+        throw new Error("Error obtiendo comentarios.")
     }
 }

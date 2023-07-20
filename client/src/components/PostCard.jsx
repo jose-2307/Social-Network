@@ -8,9 +8,10 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
+import { Link } from 'react-router-dom';
 
-const PostCard = ({image, title, description, likes, comments, author, giveLike, id}) => {
+
+const PostCard = ({inComments = false,image, title, description, likes, comments, author, giveLike, id}) => {
     return (
         <Card sx={{ width: 345 }}>
           <CardHeader
@@ -21,7 +22,7 @@ const PostCard = ({image, title, description, likes, comments, author, giveLike,
             }
             
             title={title}
-            subheader="September 14, 2016"
+            // subheader="September 14, 2016"
           />
           {image && (
             <CardMedia
@@ -37,14 +38,17 @@ const PostCard = ({image, title, description, likes, comments, author, giveLike,
               {description}
             </Typography>
           </CardContent>
-          <CardActions disableSpacing>
-            <IconButton aria-label="add to favorites" onClick={() => giveLike(id)}>
-              <FavoriteIcon /> {likes}
-            </IconButton>
-            <IconButton aria-label="share">
-              <ShareIcon />
-            </IconButton>
+          {!inComments && (
+            <CardActions disableSpacing>
+              <IconButton aria-label="add to favorites" onClick={() => giveLike(id)}>
+                <FavoriteIcon /> {likes}
+              </IconButton>
+              <IconButton aria-label="share">
+                <Link style={{textDecoration: "none", color: "rgba(0, 0, 0, 0.54)"}} to={`/${id}/comments`}><p style={{margin: 0, fontSize: "20px"}}>Comentarios ({comments})</p></Link>
+              </IconButton>
           </CardActions>
+          )}
+          
         </Card>
       );
 }
