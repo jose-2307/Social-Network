@@ -45,8 +45,8 @@ export const createPostBack = async ({title, description}) => {
     }
 }
 
-export const createLikeBack = async (productId) => {
-    const response = await fetchWrapper(`${ENDPOINT}/${productId}/like`, {
+export const createLikeBack = async (postId) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${postId}/like`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -62,8 +62,8 @@ export const createLikeBack = async (productId) => {
 }
 
 
-export const removeLikeBack = async (productId) => {
-    const response = await fetchWrapper(`${ENDPOINT}/${productId}/like`, {
+export const removeLikeBack = async (postId) => {
+    const response = await fetchWrapper(`${ENDPOINT}/${postId}/like`, {
         method: "DELETE",
     });
     if(response.ok) {

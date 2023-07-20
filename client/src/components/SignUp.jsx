@@ -33,6 +33,8 @@ const validate = (values) => {
 const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [community, setCommunity] = useState(false);
+
 
     const navigate = useNavigate();
 
@@ -40,7 +42,8 @@ const SignUp = () => {
         setLoading(true);
         let errorOCurred = false;
         try {
-            const singUp = await singUpBack({name: values.name, lastName: values.lastName, email: values.email, password: values.password});
+            values["isCommunity"] = community;
+            const singUp = await singUpBack({name: values.name, lastName: values.lastName, email: values.email, password: values.password, isCommunity: values.isCommunity});
             console.log(singUp);
             navigate("/login");
 
@@ -88,6 +91,7 @@ const SignUp = () => {
                     <TextInput name="email" required label="Correo electrónico" adornment=" " type="email" id="outlined-required" dimesions={{ m: 1, width: "66vh" }} placeholder="Ej: usuario@mail.com"></TextInput>
                     <br></br>
                     <TextInput name="password" required label="Contraseña" adornment=" " type="password" id="password" dimesions={{ m: 1, width: "66vh" }} autoComplete="current-password"></TextInput>
+                    <input type="checkbox"  onChange={() => setCommunity(!community)}/> <span>Es comunidad</span>
                     <div style={{display:"flex", flexDirection: "column", alignItems: "center"}}>
                         <Button
                             type="submit"

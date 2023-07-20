@@ -64,7 +64,7 @@ export const fetchWrapper = async (endpoint, options = {}) => { //Utilizado para
 }
 
 
-export const singUpBack = async ({name, lastName, email, password}) => {
+export const singUpBack = async ({name, lastName, email, password, isCommunity}) => {
     const response = await fetch(endpointSignUp, {
         method: "POST",
         headers: {
@@ -75,6 +75,7 @@ export const singUpBack = async ({name, lastName, email, password}) => {
             lastName,
             email,
             password,
+            isCommunity
         }),
     });
     if (response.ok) {

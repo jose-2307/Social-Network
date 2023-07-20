@@ -161,6 +161,35 @@ router.get("/recommendations",
   }
 });
 
+router.post("/post/:id/like",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getPostSchema, "params"),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const {id} = req.params;
+        const resp = await likeService.create({userId: user.sub, postId: id});
+        res.status(201).json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
+
+router.delete("/post/:id/like",
+  passport.authenticate("jwt", {session: false}),
+  validatorHandler(getPostSchema, "params"),
+  async (req, res, next) => {
+    try {
+        const user = req.user;
+        const {id} = req.params;
+        const resp = await likeService.delete(user.sub, id);
+        res.json(resp);
+    } catch (error) {
+        next(error);
+    }
+  }
+);
 
 router.post("/post/:id/comment",
   passport.authenticate("jwt", {session: false}),
@@ -233,5 +262,6 @@ router.patch("/tags",
     }
   }
 );
+
 
 module.exports = router;
