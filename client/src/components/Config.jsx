@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import { TextField, Button, Snackbar, Box } from "@mui/material";
 import { mainListItems, secondaryListItems } from './listItems';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { fetchWrapper } from "../services/auth.service";
-
-import "./styles/Home.css";
-
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -18,10 +14,9 @@ import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
-
-const ENDPOINT = "http://localhost:3000/api/v1/profile/personal-information";
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -67,8 +62,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 }),
 );
 
-
-const ChangePassword = () => {
+const Config = () => {
+  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -92,30 +87,20 @@ const ChangePassword = () => {
     setSuccessMessage("");
 
     if (newPassword !== confirmPassword) {
-      setErrorMessage("Las contraseñas no coinciden");
+      setErrorMessage("New password and confirm password do not match");
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetchWrapper(`${ENDPOINT}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password: newPassword }), // Assuming the API expects a "password" field
-      });
-
-      if (response.ok) {
-        setSuccessMessage("Contraseña cambiada exitosamente");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        // Handle other response statuses here, e.g., 401 Unauthorized
-        setErrorMessage("Error al cambiar contraseña. Intente nuevamente.");
-      }
+      // Assuming changePassword is a function that makes an API call to change the password
+      await changePassword(oldPassword, newPassword);
+      setSuccessMessage("Password changed successfully!");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     } catch (error) {
-      setErrorMessage("Error al cambiar contraseña. Intente nuevamente.");
+      setErrorMessage("Failed to change password. Please try again.");
     } finally {
       setLoading(false);
       setSnackbarOpen(true);
@@ -123,7 +108,6 @@ const ChangePassword = () => {
   };
 
   return (
-
     <Box sx={{ display: 'flex' }}>
             <AppBar position="absolute" open={open}>
             <Toolbar
@@ -191,54 +175,18 @@ const ChangePassword = () => {
                 overflow: 'auto',
             }}
             >
-                <Container maxWidth="lg" sx={{ mt: 20, mb: 4 }}>
+              <Container maxWidth="lg" sx={{ mt: 20, mb: 4 }}>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                    <h1>Change Password</h1>
-                    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
-
-                    <TextField
-                        type="password"
-                        label="New Password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        required
-                        margin="normal"
-                    />
-                    <TextField
-                        type="password"
-                        label="Confirm Password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required
-                        margin="normal"
-                    />
-                    <Button type="submit" variant="contained" color="primary" disabled={loading}>
-                        Change Password
-                    </Button>
-                    </form>
-                    {errorMessage && (
-                    <Snackbar
-                        open={snackbarOpen}
-                        autoHideDuration={6000}
-                        onClose={handleSnackbarClose}
-                        message={errorMessage}
-                        severity="error"
-                    />
-                    )}
-                    {successMessage && (
-                    <Snackbar
-                        open={snackbarOpen}
-                        autoHideDuration={6000}
-                        onClose={handleSnackbarClose}
-                        message={successMessage}
-                        severity="success"
-                    />
-                    )}
+                <Button variant="contained" color="primary" >
+                  <Link to={"/change-password"}>
+                    Cambiar Contraseña
+                  </Link>
+                </Button>
                 </div>
-                </Container>
+              </Container>
             </Box>
     </Box>
   );
 };
 
-export default ChangePassword;
+export default Config;

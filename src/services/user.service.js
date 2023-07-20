@@ -48,7 +48,7 @@ class UserService {
     if (changes.password) {
       //La contraseña se actualiza individualmente
       const hash = await bcrypt.hash(changes.password, 10);
-      await Auth.updateOne({ userId: user.id }, { password: hash });
+      await Auth.updateOne({ userId: id }, { password: hash });
       if ("recoveryToken" in changes) {
         await User.updateOne(
           { _id: id },
