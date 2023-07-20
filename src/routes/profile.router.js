@@ -108,7 +108,7 @@ router.post("/post",
     try {
         const user = req.user;
         const body = req.body;
-        const resp = await postService.create({...body, userId: user.sub});
+        const resp = await postService.create({...body, userId: user.sub, isCommunity: user.role});
         res.status(201).json(resp);
     } catch (error) {
         next(error);

@@ -1,6 +1,9 @@
 const boom = require("@hapi/boom");
 const Follow = require("../models/follow.model");
-const User = require('../models/user.model')
+const User = require('../models/user.model');
+const UserService = require("./user.service");
+
+const userService = new UserService();
 
 class followService {
     async create(data) {
@@ -31,7 +34,17 @@ class followService {
         throw boom.notFound("User not found");
       }
       const userFollowings = await Follow.find({$or: [{ user1Id :  userId}, {user2Id: userId}]});
-      return userFollowings;
+      const ids = [];
+      userFollowings.forEach(x => {
+        if (x._doc.user1Id != userId) ids.push(x._doc.user1Id);
+        if (x._doc.user2Id != userId) ids.push(x._doc.user2Id);
+      })
+      const resp = [];
+      for (let x of ids) {
+        const user = await userService.findOne(x);
+        resp.push(user);
+      }
+      return resp;
     }
     
 

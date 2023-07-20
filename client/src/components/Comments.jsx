@@ -70,9 +70,12 @@ const Comments = () => {
             {
                 comments.length === 0 
                 ? (
-                    <>
-                    <div>No hay comentarios</div>
-                    <form style={{display: "flex", flexDirection: "row"}} onSubmit={handleSubmit}>
+                    <div className="container-all">
+                        <div className="container-posts">
+                            <h3>No hay comentarios</h3>
+                            <br></br>
+                            <br></br>
+                            <form style={{display: "flex", flexDirection: "row"}} onSubmit={handleSubmit}>
                                 <TextField
                                     id="outlined-multiline-static"
                                     label="Comentario"
@@ -84,7 +87,8 @@ const Comments = () => {
                             </form>
                             <br></br>
                             <Button onClick={() => navigate("/")}>Regresar</Button>
-                    </>
+                        </div>
+                    </div>
                 )
 
                 : (

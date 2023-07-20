@@ -64,3 +64,12 @@ export const createFollow = async (id) => {
         throw new Error("Error al crear follow.");
     }
 }
+
+export const getFriendsBack = async () => {
+    const response = await fetchWrapper(ENDPOINT3);
+    if(response.ok) {
+        return response.json();
+    } else {
+        throw new Error("Error obtiendo amigos.")
+    }
+}

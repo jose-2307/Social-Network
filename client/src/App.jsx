@@ -8,6 +8,7 @@ import Comments from './components/Comments';
 import Config from "./components/Config";
 import Dashboard from './components/Recomendations';
 import CreatePost from './components/CreatePost';
+import Friends from './components/Friends';
 
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/config" element={<Config />}/>
         <Route path="/recommendations" element={<Dashboard/>}/>
         <Route path="/create-post" element={<CreatePost/>}/>
+        <Route path="/friends" element={<Friends/>}/>
         <Route path="*" element={"404: ruta no encontrada"} />
       </Routes>
     </BrowserRouter>
