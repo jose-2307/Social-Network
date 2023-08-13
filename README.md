@@ -20,13 +20,7 @@ Puedes instalarlo mediante la clonación del repositorio:
     git clone https://github.com/jose-2307/Social-Network.git
     ```
 
-2. Accede al directorio del proyecto:
-
-    ```bash
-    cd Red-social
-    ```
-
-3. Instala las dependencias del proyecto ejecutando el siguiente comando:
+2. Instala las dependencias del proyecto ejecutando el siguiente comando:
 
     ```bash
     npm install
