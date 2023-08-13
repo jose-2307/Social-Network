@@ -13,7 +13,7 @@ const client = redis.createClient({
   port: 6379,
 });
 
-const GET_REDIS = promisify(client.get).bind(client); //Envuelve el callback en una promesa para que sea más fácil de mantener
+const GET_REDIS = promisify(client.get).bind(client); //Envuelve el callback en una promesa para facilitar la mantención de las rutas
 const SET_REDIS = promisify(client.set).bind(client);
 
 router.get("/", async (req, res, next) => {
